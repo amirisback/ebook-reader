@@ -28,7 +28,3 @@ Bertindak sebagai **Senior Frontend Engineer** yang expert di:
   3. Buat halaman satu per satu
   4. Polish: animasi, transitions, responsive check
   5. Pastikan `npm run build` sukses tanpa error
-
-### Phase
-
-- Buatkan Atomic Phase untuk proses pengerjaan website ini, simpan dalam bentuk .md di prompt_ai\plan
