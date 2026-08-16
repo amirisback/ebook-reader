@@ -1,0 +1,78 @@
+{
+  "common": {
+    "appName": "Amir App",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "back": "Back",
+    "next": "Next",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or",
+    "and": "and"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "menu": "Menu",
+    "language": "Language"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "home": {
+    "title": "Welcome",
+    "subtitle": "To get started, edit the page.tsx file.",
+    "description": "Looking for a starting point or more instructions? Head over to",
+    "templates": "Templates",
+    "learning": "Learning Center",
+    "deployNow": "Deploy Now",
+    "documentation": "Documentation"
+  },
+  "metadata": {
+    "title": "Amir App",
+    "description": "Amir App — Progressive Web Application"
+  },
+  "error": {
+    "notFound": "Page not found",
+    "notFoundDescription": "Sorry, the page you are looking for does not exist.",
+    "serverError": "Server Error",
+    "serverErrorDescription": "A server error occurred. Please try again later.",
+    "goHome": "Go to Homepage"
+  },
+  "footer": {
+    "copyright": "© {year} Amir App. All rights reserved.",
+    "madeWith": "Made with"
+  },
+  "demo": {
+    "title": "ID Encryption & Obfuscation",
+    "subtitle": "High security & clean URLs for Next.js",
+    "intro": "This page demonstrates the implementation of two ID security techniques that have been integrated into this template.",
+    "obfuscationTitle": "1. ID Obfuscation (Sqids)",
+    "obfuscationDesc": "Converts sequential database integer IDs into short, unique, and URL-friendly strings. Perfect for hiding IDs from being guessed.",
+    "obfuscationPlaceholder": "Enter positive number ID (e.g. 12345)",
+    "obfuscateButton": "Obfuscate ID",
+    "deobfuscateButton": "Deobfuscate ID",
+    "encryptionTitle": "2. Cryptographic Encryption (AES-256-GCM)",
+    "encryptionDesc": "High-security, authenticated, and tamper-proof AES-GCM encryption. Runs exclusively on the server (Server Component / Action).",
+    "encryptionPlaceholder": "Enter sensitive text or UUID",
+    "encryptButton": "Encrypt Text",
+    "decryptButton": "Decrypt Text",
+    "result": "Result",
+    "original": "Original",
+    "processed": "Processed",
+    "errorInvalidNumber": "Please enter a valid positive number.",
+    "errorEmptyText": "Text cannot be empty.",
+    "success": "Success!"
+  }
+}
