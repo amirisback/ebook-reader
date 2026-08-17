@@ -7,9 +7,13 @@ import {
   useState,
 } from "react";
 import type { PDFDocumentProxy } from "pdfjs-dist";
-import HTMLFlipBook from "react-pageflip";
+import { PageFlip } from "page-flip";
 import type { Dictionary } from "@/lib/dictionaries";
 import { renderPageToImage } from "@/lib/pdf-utils";
+
+export interface FlipBookHandle {
+  pageFlip: () => PageFlip | null;
+}
 
 interface PdfViewerProps {
   dict: Dictionary;
@@ -19,37 +23,8 @@ interface PdfViewerProps {
   isSinglePage: boolean;
   onPageChange?: (page: number) => void;
   onToggleControls?: () => void;
-  flipBookRef?: React.RefObject<{ pageFlip: () => { flip: (page: number) => void } } | null>;
+  flipBookRef?: React.RefObject<FlipBookHandle | null>;
 }
-
-/** Halaman PDF terisolasi */
-const BookPage = ({
-  src,
-  pageNum,
-}: {
-  src: string;
-  pageNum: number;
-}) => {
-  if (!src) {
-    return (
-      <div className="flex h-full w-full items-center justify-center bg-white dark:bg-slate-900">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative h-full w-full select-none overflow-hidden bg-white shadow-sm">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={`Halaman ${pageNum}`}
-        className="h-full w-full object-contain pointer-events-none"
-        draggable={false}
-      />
-    </div>
-  );
-};
 
 export function PdfViewer({
   dict,
@@ -63,10 +38,22 @@ export function PdfViewer({
 }: PdfViewerProps) {
   const [pages, setPages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [renderedCount, setRenderedCount] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [aspectRatio, setAspectRatio] = useState<number>(0.707); // Default A4
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
+
   const containerRef = useRef<HTMLDivElement>(null);
+  const pageFlipInstance = useRef<PageFlip | null>(null);
+
+  // Ekspos instance ke parent via flipBookRef
+  useEffect(() => {
+    if (flipBookRef) {
+      flipBookRef.current = {
+        pageFlip: () => pageFlipInstance.current,
+      };
+    }
+  }, [flipBookRef]);
 
   // Ambil rasio asli dari halaman pertama PDF
   useEffect(() => {
@@ -96,7 +83,6 @@ export function PdfViewer({
       const isMobile = rect.width < 768;
       const useSingle = isSinglePage || isMobile;
 
-      // Sediakan padding yang nyaman
       const paddingX = isMobile ? 16 : 48;
       const paddingY = isMobile ? 24 : 48;
 
@@ -115,7 +101,6 @@ export function PdfViewer({
         w = h * aspectRatio;
       }
 
-      // Terapkan zoom
       setDimensions({
         width: Math.max(160, Math.round(w * zoom)),
         height: Math.max(220, Math.round(h * zoom)),
@@ -127,7 +112,7 @@ export function PdfViewer({
     return () => window.removeEventListener("resize", calculateSize);
   }, [aspectRatio, isSinglePage, zoom]);
 
-  // Render halaman-halaman PDF dengan resolusi tajam
+  // Render halaman-halaman PDF menjadi data URL gambar
   useEffect(() => {
     let cancelled = false;
 
@@ -135,22 +120,21 @@ export function PdfViewer({
       try {
         setLoading(true);
         setError(null);
+        setRenderedCount(0);
 
         const renderedList: string[] = [];
 
-        // Render setiap halaman dengan scale 2.0 untuk kejernihan teks
         for (let i = 1; i <= pdf.numPages; i++) {
           if (cancelled) return;
           const dataUrl = await renderPageToImage(pdf, i, 2.0);
           renderedList.push(dataUrl);
-
-          // Update berkala
-          if (i === 1 || i % 3 === 0 || i === pdf.numPages) {
-            setPages([...renderedList]);
-          }
+          setRenderedCount(i);
         }
 
-        setLoading(false);
+        if (!cancelled) {
+          setPages(renderedList);
+          setLoading(false);
+        }
       } catch (err) {
         console.error("Gagal merender halaman PDF:", err);
         if (!cancelled) {
@@ -167,12 +151,78 @@ export function PdfViewer({
     };
   }, [pdf, dict.reader.errorLoading]);
 
-  const handleFlip = useCallback(
-    (e: { data: number }) => {
-      onPageChange?.(e.data + 1);
-    },
-    [onPageChange]
-  );
+  // Inisialisasi PageFlip saat pages dan dimensions siap
+  useEffect(() => {
+    if (!containerRef.current || pages.length === 0 || !dimensions) return;
+
+    const parent = containerRef.current;
+    // Bersihkan host sebelumnya
+    parent.innerHTML = "";
+
+    // Buat DOM host terisolasi untuk PageFlip agar tidak mengganggu React reconciliation
+    const bookHost = document.createElement("div");
+    bookHost.style.margin = "0 auto";
+    parent.appendChild(bookHost);
+
+    const isMobileScreen = window.innerWidth < 768;
+    const usePortraitMode = isSinglePage || isMobileScreen;
+
+    try {
+      const flip = new PageFlip(bookHost, {
+        width: dimensions.width,
+        height: dimensions.height,
+        size: "fixed",
+        minWidth: 160,
+        maxWidth: 1200,
+        minHeight: 220,
+        maxHeight: 1600,
+        showCover: false,
+        mobileScrollSupport: true,
+        startPage: initialPage,
+        drawShadow: true,
+        flippingTime: 500,
+        usePortrait: usePortraitMode,
+        startZIndex: 0,
+        autoSize: true,
+        maxShadowOpacity: 0.25,
+        showPageCorners: true,
+        disableFlipByClick: false,
+        clickEventForward: true,
+        useMouseEvents: true,
+        swipeDistance: 20,
+      });
+
+      flip.loadFromImages(pages);
+
+      flip.on("flip", (e) => {
+        onPageChange?.(Number(e.data) + 1);
+      });
+
+      pageFlipInstance.current = flip;
+    } catch (err) {
+      console.error("Gagal menginisialisasi PageFlip:", err);
+    }
+
+    return () => {
+      if (pageFlipInstance.current) {
+        try {
+          pageFlipInstance.current.destroy();
+        } catch {
+          // Abaikan error saat teardown
+        }
+        pageFlipInstance.current = null;
+      }
+      parent.innerHTML = "";
+    };
+  }, [pages, dimensions, isSinglePage, initialPage, onPageChange]);
+
+  const handlePrevPage = useCallback(() => {
+    pageFlipInstance.current?.flipPrev("top");
+  }, []);
+
+  const handleNextPage = useCallback(() => {
+    pageFlipInstance.current?.flipNext("top");
+  }, []);
 
   if (error) {
     return (
@@ -199,37 +249,19 @@ export function PdfViewer({
     );
   }
 
-  if (loading && pages.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-3 p-8">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-        <p className="text-sm text-muted-foreground">
-          {dict.reader.loadingPdf}
-        </p>
-      </div>
-    );
-  }
-
   const isMobileScreen =
     typeof window !== "undefined" ? window.innerWidth < 768 : true;
-  const usePortraitMode = isSinglePage || isMobileScreen;
 
   return (
-    <div
-      ref={containerRef}
-      className="relative flex h-full w-full items-center justify-center overflow-auto px-2 py-4 sm:px-4"
-    >
-      {/* Tap zones for mobile reading */}
-      {isMobileScreen && (
+    <div className="relative flex h-full w-full items-center justify-center overflow-auto px-2 py-4 sm:px-4">
+      {/* Tap zones untuk mobile reader */}
+      {isMobileScreen && !loading && (
         <>
           {/* Left tap zone: Flip to Previous Page */}
           <button
             type="button"
             className="absolute left-0 top-0 z-30 h-full w-1/5 opacity-0 cursor-pointer"
-            onClick={() => {
-              // @ts-expect-error react-pageflip internal API
-              flipBookRef?.current?.pageFlip()?.flipPrev("top");
-            }}
+            onClick={handlePrevPage}
             aria-label={dict.reader.previousPage}
           />
           {/* Center tap zone: Toggle Toolbar Controls */}
@@ -243,56 +275,25 @@ export function PdfViewer({
           <button
             type="button"
             className="absolute right-0 top-0 z-30 h-full w-1/5 opacity-0 cursor-pointer"
-            onClick={() => {
-              // @ts-expect-error react-pageflip internal API
-              flipBookRef?.current?.pageFlip()?.flipNext("top");
-            }}
+            onClick={handleNextPage}
             aria-label={dict.reader.nextPage}
           />
         </>
       )}
 
-      {/* Render flipbook once dimensions and at least 1 page are available */}
-      {dimensions && pages.length > 0 && (
-        <HTMLFlipBook
-          ref={flipBookRef}
-          width={dimensions.width}
-          height={dimensions.height}
-          size="fixed"
-          minWidth={160}
-          maxWidth={1200}
-          minHeight={220}
-          maxHeight={1600}
-          showCover={false}
-          mobileScrollSupport={true}
-          startPage={initialPage}
-          drawShadow={true}
-          flippingTime={500}
-          usePortrait={usePortraitMode}
-          startZIndex={0}
-          autoSize={true}
-          maxShadowOpacity={0.25}
-          onFlip={handleFlip}
-          className="shadow-2xl transition-transform duration-200"
-          style={{ margin: "0 auto" }}
-          useMouseEvents={true}
-          swipeDistance={20}
-          showPageCorners={true}
-          disableFlipByClick={false}
-          clickEventForward={true}
-        >
-          {pages.map((src, i) => (
-            <div key={i} className="bg-white">
-              <BookPage src={src} pageNum={i + 1} />
-            </div>
-          ))}
-        </HTMLFlipBook>
-      )}
+      {/* Flipbook DOM Container */}
+      <div
+        ref={containerRef}
+        className="flex items-center justify-center shadow-2xl transition-transform duration-200"
+      />
 
       {/* Loading Progress Indicator */}
-      {loading && pages.length > 0 && (
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 rounded-full border border-border/80 bg-background/90 px-3.5 py-1 text-xs font-medium text-muted-foreground shadow-md backdrop-blur-md">
-          {dict.upload.parsing} ({pages.length}/{pdf.numPages})
+      {loading && (
+        <div className="flex flex-col items-center justify-center gap-3 p-8">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <p className="text-sm font-medium text-muted-foreground">
+            {dict.reader.loadingPdf} ({renderedCount}/{pdf.numPages})
+          </p>
         </div>
       )}
     </div>

@@ -9,7 +9,7 @@ import type { Dictionary } from "@/lib/dictionaries";
 import { loadPdfFromFile, loadPdfFromBuffer, generateThumbnail, getPdfMetadata } from "@/lib/pdf-utils";
 import { getPdfFromDB } from "@/lib/pdf-db";
 import { saveRecentDocument, getRecentDocuments } from "@/lib/storage";
-import { PdfViewer } from "@/app/_components/pdf-viewer";
+import { PdfViewer, type FlipBookHandle } from "@/app/_components/pdf-viewer";
 import { ReaderToolbar } from "@/app/_components/reader-toolbar";
 
 interface ReaderClientProps {
@@ -21,7 +21,7 @@ export function ReaderClient({ dict }: ReaderClientProps) {
   const searchParams = useSearchParams();
   const docId = searchParams.get("id");
 
-  const flipBookRef = useRef<{ pageFlip: () => { flip: (page: number) => void } } | null>(null);
+  const flipBookRef = useRef<FlipBookHandle | null>(null);
 
   const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null);
   const [loading, setLoading] = useState(true);
