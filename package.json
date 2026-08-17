@@ -14,8 +14,10 @@
     "@serwist/next": "^9.5.12",
     "next": "16.3.0",
     "next-themes": "^0.4.6",
+    "pdfjs-dist": "^6.2.108",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "react-pageflip": "^2.0.3",
     "server-only": "^0.0.1",
     "serwist": "^9.5.12",
     "sqids": "^0.3.0"

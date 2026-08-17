@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Amir App",
+    "appName": "DocuFlip",
     "loading": "Loading...",
     "error": "An error occurred",
     "retry": "Retry",
@@ -31,17 +31,48 @@
     "system": "System"
   },
   "home": {
-    "title": "Welcome",
-    "subtitle": "To get started, edit the page.tsx file.",
-    "description": "Looking for a starting point or more instructions? Head over to",
-    "templates": "Templates",
-    "learning": "Learning Center",
-    "deployNow": "Deploy Now",
-    "documentation": "Documentation"
+    "title": "Read PDFs Like a Real Book",
+    "subtitle": "Upload your PDF files and enjoy an interactive reading experience with realistic page-flipping effects.",
+    "uploadTitle": "Upload Document",
+    "uploadDesc": "Drag a PDF file here or click to browse",
+    "uploadButton": "Choose PDF File",
+    "uploadHint": "Supports PDF files up to 50MB",
+    "recentTitle": "Recently Read",
+    "recentEmpty": "No documents read yet. Upload your first PDF!",
+    "recentContinue": "Continue Reading",
+    "recentDelete": "Remove from History",
+    "recentPages": "{count} pages",
+    "recentLastRead": "Last read {date}"
+  },
+  "reader": {
+    "title": "Document Reader",
+    "pageOf": "Page {current} of {total}",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit Fullscreen",
+    "previousPage": "Previous Page",
+    "nextPage": "Next Page",
+    "goToPage": "Go to Page",
+    "singlePage": "Single Page",
+    "doublePage": "Two Pages",
+    "toggleView": "Toggle View",
+    "backToHome": "Back to Home",
+    "loadingPdf": "Loading document...",
+    "errorLoading": "Failed to load document. Make sure the PDF file is valid.",
+    "noDocument": "No document selected.",
+    "noDocumentDesc": "Go back to the home page to upload a PDF file."
+  },
+  "upload": {
+    "dragActive": "Drop the file here...",
+    "invalidType": "Only PDF files are supported.",
+    "tooLarge": "File size exceeds the 50MB limit.",
+    "parsing": "Processing document...",
+    "success": "Document loaded successfully!"
   },
   "metadata": {
-    "title": "Amir App",
-    "description": "Amir App — Progressive Web Application"
+    "title": "DocuFlip — Read PDFs Like a Real Book",
+    "description": "An interactive web application for reading PDF files with a realistic flipbook visual experience, just like reading a physical book."
   },
   "error": {
     "notFound": "Page not found",
@@ -51,28 +82,8 @@
     "goHome": "Go to Homepage"
   },
   "footer": {
-    "copyright": "© {year} Amir App. All rights reserved.",
-    "madeWith": "Made with"
-  },
-  "demo": {
-    "title": "ID Encryption & Obfuscation",
-    "subtitle": "High security & clean URLs for Next.js",
-    "intro": "This page demonstrates the implementation of two ID security techniques that have been integrated into this template.",
-    "obfuscationTitle": "1. ID Obfuscation (Sqids)",
-    "obfuscationDesc": "Converts sequential database integer IDs into short, unique, and URL-friendly strings. Perfect for hiding IDs from being guessed.",
-    "obfuscationPlaceholder": "Enter positive number ID (e.g. 12345)",
-    "obfuscateButton": "Obfuscate ID",
-    "deobfuscateButton": "Deobfuscate ID",
-    "encryptionTitle": "2. Cryptographic Encryption (AES-256-GCM)",
-    "encryptionDesc": "High-security, authenticated, and tamper-proof AES-GCM encryption. Runs exclusively on the server (Server Component / Action).",
-    "encryptionPlaceholder": "Enter sensitive text or UUID",
-    "encryptButton": "Encrypt Text",
-    "decryptButton": "Decrypt Text",
-    "result": "Result",
-    "original": "Original",
-    "processed": "Processed",
-    "errorInvalidNumber": "Please enter a valid positive number.",
-    "errorEmptyText": "Text cannot be empty.",
-    "success": "Success!"
+    "copyright": "© {year} DocuFlip. All rights reserved.",
+    "madeWith": "Made with",
+    "tagline": "Read PDFs, feel like a real book."
   }
 }

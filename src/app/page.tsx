@@ -1,16 +1,15 @@
-import Image from "next/image";
-import Link from "next/link";
 import { getCurrentDictionary } from "@/lib/i18n-server";
 import { generateWebsiteJsonLd } from "@/lib/seo";
-// import { LanguageSwitcher } from "./_components/language-switcher";
-// import { ThemeSwitcher } from "./_components/theme-switcher";
+import { Header } from "./_components/header";
+import { Footer } from "./_components/footer";
+import { HomeClient } from "./_components/home-client";
 
 export default async function Home() {
   const { locale, dict } = await getCurrentDictionary();
   const websiteJsonLd = generateWebsiteJsonLd(locale);
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+    <div className="flex min-h-full flex-col bg-background">
       {/* JSON-LD Structured Data — WebSite */}
       <script
         type="application/ld+json"
@@ -19,80 +18,49 @@ export default async function Home() {
         }}
       />
 
-      <header className="w-full max-w-3xl flex justify-between items-center px-8 pt-8 sm:px-16">
-        <div className="text-sm font-semibold tracking-wide text-zinc-600 dark:text-zinc-400">
-          {dict.common.appName}
-        </div>
-        {/* Switchers disiapkan tetapi default di-hide/gone sampai ada request show dari user */}
-        {/* <div className="flex items-center gap-3">
-          <ThemeSwitcher labels={dict.theme} />
-          <LanguageSwitcher currentLocale={locale} />
-        </div> */}
-      </header>
+      <Header dict={dict} />
 
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-24 px-8 sm:px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            {dict.home.subtitle}
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            {dict.home.description}{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              {dict.home.templates}
-            </a>{" "}
-            {dict.common.or}{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              {dict.home.learning}
-            </a>
-            .
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row w-full sm:w-auto">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            {dict.home.deployNow}
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {dict.home.documentation}
-          </a>
-          <Link
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-indigo-500/30 bg-indigo-500/10 px-5 text-indigo-600 dark:text-indigo-400 transition-colors hover:bg-indigo-500/20 md:w-[158px]"
-            href="/demo-encryption"
-          >
-            Demo Page
-          </Link>
-        </div>
+      <main className="flex flex-1 flex-col">
+        {/* Hero Section */}
+        <section className="relative overflow-hidden border-b border-border/40">
+          <div className="mx-auto max-w-5xl px-4 pb-12 pt-16 text-center sm:px-6 sm:pb-16 sm:pt-24">
+            {/* Hero icon */}
+            <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary sm:h-16 sm:w-16">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                className="sm:h-8 sm:w-8"
+              >
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg>
+            </div>
+
+            <h1 className="mx-auto max-w-lg text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl md:text-5xl">
+              {dict.home.title}
+            </h1>
+
+            <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+              {dict.home.subtitle}
+            </p>
+          </div>
+
+          {/* Subtle background gradient */}
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-primary/[0.03] to-transparent" />
+        </section>
+
+        {/* Client-side interactive area: Upload + Recent */}
+        <HomeClient dict={dict} />
       </main>
+
+      <Footer dict={dict} />
     </div>
   );
 }

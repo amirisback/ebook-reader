@@ -2,13 +2,13 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Amir App',
-    short_name: 'AmirApp',
-    description: 'Amir App Progressive Web App',
+    name: 'DocuFlip — Baca PDF Seperti Buku Nyata',
+    short_name: 'DocuFlip',
+    description: 'Aplikasi web interaktif untuk membaca PDF dengan efek flipbook realistis',
     start_url: '/',
     display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#000000',
+    background_color: '#F8FAFC',
+    theme_color: '#6366F1',
     icons: [
       {
         src: '/icon-192x192.svg',

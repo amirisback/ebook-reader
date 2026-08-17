@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Amir App",
+    "appName": "DocuFlip",
     "loading": "Memuat...",
     "error": "Terjadi kesalahan",
     "retry": "Coba Lagi",
@@ -31,17 +31,48 @@
     "system": "Sistem"
   },
   "home": {
-    "title": "Selamat Datang",
-    "subtitle": "Untuk memulai, edit file page.tsx.",
-    "description": "Mencari titik awal atau instruksi lebih lanjut? Kunjungi",
-    "templates": "Template",
-    "learning": "Pusat Belajar",
-    "deployNow": "Deploy Sekarang",
-    "documentation": "Dokumentasi"
+    "title": "Baca PDF Seperti Buku Nyata",
+    "subtitle": "Unggah file PDF Anda dan nikmati pengalaman membaca interaktif dengan efek membalik halaman yang realistis.",
+    "uploadTitle": "Unggah Dokumen",
+    "uploadDesc": "Seret file PDF ke sini atau klik untuk memilih",
+    "uploadButton": "Pilih File PDF",
+    "uploadHint": "Mendukung file PDF hingga 50MB",
+    "recentTitle": "Terakhir Dibaca",
+    "recentEmpty": "Belum ada dokumen yang dibaca. Unggah PDF pertama Anda!",
+    "recentContinue": "Lanjutkan Membaca",
+    "recentDelete": "Hapus dari Riwayat",
+    "recentPages": "{count} halaman",
+    "recentLastRead": "Terakhir dibaca {date}"
+  },
+  "reader": {
+    "title": "Pembaca Dokumen",
+    "pageOf": "Halaman {current} dari {total}",
+    "zoomIn": "Perbesar",
+    "zoomOut": "Perkecil",
+    "fullscreen": "Layar Penuh",
+    "exitFullscreen": "Keluar Layar Penuh",
+    "previousPage": "Halaman Sebelumnya",
+    "nextPage": "Halaman Berikutnya",
+    "goToPage": "Pergi ke Halaman",
+    "singlePage": "1 Halaman",
+    "doublePage": "2 Halaman",
+    "toggleView": "Ubah Tampilan",
+    "backToHome": "Kembali ke Beranda",
+    "loadingPdf": "Memuat dokumen...",
+    "errorLoading": "Gagal memuat dokumen. Pastikan file PDF valid.",
+    "noDocument": "Tidak ada dokumen yang dipilih.",
+    "noDocumentDesc": "Kembali ke beranda untuk mengunggah file PDF."
+  },
+  "upload": {
+    "dragActive": "Lepaskan file di sini...",
+    "invalidType": "Hanya file PDF yang didukung.",
+    "tooLarge": "Ukuran file melebihi batas 50MB.",
+    "parsing": "Memproses dokumen...",
+    "success": "Dokumen berhasil dimuat!"
   },
   "metadata": {
-    "title": "Amir App",
-    "description": "Amir App — Aplikasi Web Progressive"
+    "title": "DocuFlip — Baca PDF Seperti Buku Nyata",
+    "description": "Aplikasi web interaktif untuk membaca file PDF dengan pengalaman visual flipbook yang realistis seperti membaca buku fisik."
   },
   "error": {
     "notFound": "Halaman tidak ditemukan",
@@ -51,28 +82,8 @@
     "goHome": "Kembali ke Beranda"
   },
   "footer": {
-    "copyright": "© {year} Amir App. Semua hak dilindungi.",
-    "madeWith": "Dibuat dengan"
-  },
-  "demo": {
-    "title": "Enkripsi & Penyamaran ID",
-    "subtitle": "Keamanan tingkat tinggi & URL yang bersih untuk Next.js",
-    "intro": "Halaman ini menunjukkan implementasi dari dua teknik pengamanan ID yang telah diintegrasikan ke dalam template ini.",
-    "obfuscationTitle": "1. Penyamaran ID (Sqids)",
-    "obfuscationDesc": "Mengubah ID integer berurutan (misal dari database) menjadi string acak pendek dan ramah URL. Cocok untuk menyembunyikan ID agar tidak ditebak.",
-    "obfuscationPlaceholder": "Masukkan ID angka positif (misal: 12345)",
-    "obfuscateButton": "Samarkan ID",
-    "deobfuscateButton": "Kembalikan ID",
-    "encryptionTitle": "2. Enkripsi Kriptografis (AES-256-GCM)",
-    "encryptionDesc": "Enkripsi tingkat tinggi yang aman, terautentikasi (AES-GCM), dan anti-manipulasi. Hanya berjalan di sisi server (Server Component / Action).",
-    "encryptionPlaceholder": "Masukkan teks atau UUID sensitif",
-    "encryptButton": "Enkripsi Teks",
-    "decryptButton": "Dekripsi Teks",
-    "result": "Hasil",
-    "original": "Asli",
-    "processed": "Hasil Proses",
-    "errorInvalidNumber": "Silakan masukkan angka positif yang valid.",
-    "errorEmptyText": "Teks tidak boleh kosong.",
-    "success": "Sukses!"
+    "copyright": "© {year} DocuFlip. Semua hak dilindungi.",
+    "madeWith": "Dibuat dengan",
+    "tagline": "Baca PDF, rasakan seperti buku nyata."
   }
 }
