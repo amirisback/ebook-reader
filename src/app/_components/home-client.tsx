@@ -3,7 +3,6 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Dictionary } from "@/lib/dictionaries";
-import { loadPdfFromFile, generateThumbnail, getPdfMetadata } from "@/lib/pdf-utils";
 import { savePdfToDB } from "@/lib/pdf-db";
 import { saveRecentDocument, type RecentDocument } from "@/lib/storage";
 import { UploadZone } from "./upload-zone";
@@ -31,27 +30,23 @@ export function HomeClient({ dict }: HomeClientProps) {
         // Simpan binary PDF ke IndexedDB
         await savePdfToDB(docId, file);
 
-        // Load metadata & thumbnail
-        const pdf = await loadPdfFromFile(file);
-        const metadata = await getPdfMetadata(pdf);
-        const thumbnail = await generateThumbnail(pdf, 0.35);
-
-        // Simpan metadata ke localStorage
+        // Simpan metadata awal ke localStorage
+        const baseTitle = file.name.replace(/\.pdf$/i, "");
         saveRecentDocument({
           id: docId,
-          title: metadata.title || file.name.replace(/\.pdf$/i, ""),
-          pageCount: metadata.pageCount,
+          title: baseTitle,
+          pageCount: 1,
           lastPage: 0,
-          thumbnail,
+          thumbnail: "",
         });
 
-        // Simpan fallback session URL
+        // Fallback session
         const blobUrl = URL.createObjectURL(file);
         sessionStorage.setItem("docuflip_pdf_url", blobUrl);
         sessionStorage.setItem("docuflip_pdf_name", file.name);
         sessionStorage.setItem("docuflip_pdf_id", docId);
 
-        // Navigasi ke reader dengan doc ID
+        // Navigasi instan ke reader
         router.push(`/reader?id=${docId}`);
       } catch (err) {
         console.error("Gagal memproses PDF:", err);

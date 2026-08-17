@@ -6,7 +6,7 @@ import Link from "next/link";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 
 import type { Dictionary } from "@/lib/dictionaries";
-import { loadPdfFromFile, loadPdfFromBuffer } from "@/lib/pdf-utils";
+import { loadPdfFromFile, loadPdfFromBuffer, generateThumbnail, getPdfMetadata } from "@/lib/pdf-utils";
 import { getPdfFromDB } from "@/lib/pdf-db";
 import { saveRecentDocument, getRecentDocuments } from "@/lib/storage";
 import { PdfViewer } from "@/app/_components/pdf-viewer";
@@ -162,6 +162,25 @@ export function ReaderClient({ dict }: ReaderClientProps) {
           setCurrentPage(initialPageNum);
           setLoading(false);
           showControlsTemporarily();
+
+          // Perbarui metadata & thumbnail di background secara non-blocking
+          const doc = pdfDoc;
+          getPdfMetadata(doc).then(async (meta) => {
+            const finalTitle = title || meta.title;
+            if (finalTitle) setFileName(finalTitle);
+
+            const thumb = await generateThumbnail(doc, 0.35).catch(() => "");
+            const docs = getRecentDocuments();
+            const existing = docs.find((d) => d.id === docId || d.title === title);
+            if (existing) {
+              saveRecentDocument({
+                ...existing,
+                title: finalTitle || existing.title,
+                pageCount: doc.numPages,
+                thumbnail: thumb || existing.thumbnail,
+              });
+            }
+          }).catch(() => {});
         } else {
           setError("no_document");
           setLoading(false);

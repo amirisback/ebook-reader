@@ -14,10 +14,9 @@ let pdfjsLib: typeof import("pdfjs-dist") | null = null;
 async function getPdfJs(): Promise<typeof import("pdfjs-dist")> {
   if (pdfjsLib) return pdfjsLib;
   const lib = await import("pdfjs-dist");
-  lib.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url
-  ).toString();
+  if (typeof window !== "undefined") {
+    lib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+  }
   pdfjsLib = lib;
   return lib;
 }

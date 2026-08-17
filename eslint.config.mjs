@@ -14,6 +14,7 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "public/sw.js",
     "public/sw.js.map",
+    "public/pdf.worker.min.mjs",
     "cli/**",
     ".agents/**",
     "prompt_ai/**",

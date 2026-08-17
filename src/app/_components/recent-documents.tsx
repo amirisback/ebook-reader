@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import Image from "next/image";
 import type { Dictionary } from "@/lib/dictionaries";
 import {
-  getRecentDocuments,
   removeRecentDocument,
   type RecentDocument,
 } from "@/lib/storage";
@@ -14,15 +13,48 @@ interface RecentDocumentsProps {
   onDocumentSelect: (doc: RecentDocument) => void;
 }
 
+const emptyArrayStr = "[]";
+
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener("docuflip_storage_change", callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener("docuflip_storage_change", callback);
+  };
+}
+
+function getSnapshot(): string {
+  if (typeof window === "undefined") return emptyArrayStr;
+  return localStorage.getItem("docuflip_recent_docs") || emptyArrayStr;
+}
+
+function getServerSnapshot(): string {
+  return emptyArrayStr;
+}
+
 export function RecentDocuments({
   dict,
   onDocumentSelect,
 }: RecentDocumentsProps) {
-  const [docs, setDocs] = useState<RecentDocument[]>(() => getRecentDocuments());
+  const raw = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  const docs = useMemo(() => {
+    try {
+      const parsed: RecentDocument[] = JSON.parse(raw);
+      return parsed.sort(
+        (a, b) => new Date(b.lastRead).getTime() - new Date(a.lastRead).getTime()
+      );
+    } catch {
+      return [];
+    }
+  }, [raw]);
 
   const handleRemove = (id: string) => {
     removeRecentDocument(id);
-    setDocs(getRecentDocuments());
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("docuflip_storage_change"));
+    }
   };
 
   if (docs.length === 0) {

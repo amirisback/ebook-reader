@@ -75,6 +75,10 @@ export function saveRecentDocument(
     localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
   }
 
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("docuflip_storage_change"));
+  }
+
   return saved;
 }
 
@@ -86,4 +90,7 @@ export function removeRecentDocument(id: string): void {
     console.warn("Gagal memperbarui localStorage setelah hapus:", err);
   }
   deletePdfFromDB(id);
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("docuflip_storage_change"));
+  }
 }
